@@ -2,10 +2,16 @@ const express = require('express')
 var mongoose = require('mongoose');
 var multer = require("multer");
 const app = express()
-const port = 8000
-const cors = require('cors')
+const path = require("path");
 
-mongoose.connect("mongodb+srv://admin:himanshu@cluster0.thkmk.mongodb.net/?retryWrites=true&w=majority");
+const cors = require('cors')
+const dotenv = require("dotenv");
+
+dotenv.config();
+const port = process.env.PORT || 8000;
+
+mongoose.connect(process.env.MONGODB_URI);
+
 
 app.use(cors());
 app.use(express.json());
@@ -41,4 +47,16 @@ app.post("/fileupload",upload,(req,res)=>{
     res.status(201).json(req.file)
 })
 
-// exports.upload =upload; 
+
+app.get("/fileget",)
+
+//-----PRODUCTION----------//
+if(process.env.NODE_ENV==="production"){
+    
+    console.log(__dirname);
+    app.use(express.static(path.join(__dirname,"../frontend","build")));
+    app.get("/*",(req,res)=>{
+        res.sendFile (path.join(__dirname,"../frontend","build","index.html"))
+    })
+
+}
